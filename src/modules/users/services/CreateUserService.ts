@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
+import IMailProvider from '@shared/container/providers/MailProvider/models/IMailProvider';
 import { UserModel } from '../infra/mongoose/schemas/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
@@ -20,6 +21,9 @@ class CreateUserSercice {
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
+
+    @inject('MailProvider')
+    private mailProvider: IMailProvider,
   ) {}
 
   public async execute({
@@ -38,6 +42,15 @@ class CreateUserSercice {
       name,
       email,
       password: hashedPassword,
+    });
+
+    await this.mailProvider.sendMail({
+      to: {
+        name: user.name,
+        email: user.email,
+      },
+      subject: '[Queue - Node] - Teste',
+      html: `Òlá, ${user.name} bem vindo ao Queue Node`,
     });
 
     return user;
