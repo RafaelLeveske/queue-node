@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import dbConfig from '@config/db';
+import dbConfig from '@config/mongoose';
 
 const mongooseConnectionOptions = {
   useNewUrlParser: true,

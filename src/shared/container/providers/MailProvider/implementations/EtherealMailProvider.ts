@@ -1,11 +1,14 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import { injectable } from 'tsyringe';
-
+import Queue from 'bull';
+import redisConfig from '@config/redis';
 import IMailProvider from '../models/IMailProvider';
 import ISendMailDTO from '../dtos/ISendMailDTO';
 
 @injectable()
 export default class EtherealMailProvider implements IMailProvider {
+  private queue: unknown;
+
   private client: Transporter;
 
   constructor() {
@@ -24,12 +27,7 @@ export default class EtherealMailProvider implements IMailProvider {
     });
   }
 
-  public async sendMail({
-    to,
-    from,
-    subject,
-    html,
-  }: ISendMailDTO): Promise<void> {
+  public async sendMail({ to, from, subject }: ISendMailDTO): Promise<void> {
     const message = await this.client.sendMail({
       from: {
         name: from?.name || 'Queue Node',
@@ -40,7 +38,6 @@ export default class EtherealMailProvider implements IMailProvider {
         address: to.email,
       },
       subject,
-      html,
     });
 
     console.log('Message sent: %s', message.messageId);
