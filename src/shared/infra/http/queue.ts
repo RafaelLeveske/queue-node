@@ -1,8 +1,9 @@
 import dotenv from 'dotenv';
-import { Worker } from 'bullmq';
-import RegistrationMail from '@modules/users/jobs/RegistrationMail';
 
 dotenv.config();
+
+import { Worker } from 'bullmq';
+import RegistrationMail from '@modules/users/jobs/RegistrationMail';
 
 const worker = new Worker(RegistrationMail.key);
 

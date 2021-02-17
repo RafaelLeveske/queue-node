@@ -1,5 +1,7 @@
 import dotenv from 'dotenv';
 
+dotenv.config();
+
 import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
@@ -9,8 +11,6 @@ import AppError from '@shared/errors/AppError';
 import routes from './routes';
 import '@shared/infra/mongoose';
 import '@shared/container';
-
-dotenv.config();
 
 const app = express();
 
