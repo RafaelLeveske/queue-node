@@ -1,7 +1,9 @@
-import Queue from 'bull';
+import { Queue } from 'bullmq';
 import redisConfig from '@config/redis';
 import RegistrationMail from '../jobs/RegistrationMail';
 
-const mailQueue = new Queue(RegistrationMail.key, `redis://127.0.0.1:6379`);
+const mailQueue = new Queue(RegistrationMail.key, {
+  connection: redisConfig.config.redis,
+});
 
 export default mailQueue;

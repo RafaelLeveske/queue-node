@@ -1,8 +1,8 @@
 import Mail from '../lib/Mail';
-import ICreateUserDTO from '../dtos/ICreateUserDTO';
+import { UserModel } from '../infra/mongoose/schemas/User';
 
 interface IRegistrationMail {
-  data: ICreateUserDTO;
+  data: UserModel;
 }
 
 export default {
