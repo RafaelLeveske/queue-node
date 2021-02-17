@@ -1,5 +1,8 @@
-import 'reflect-metadata';
 import dotenv from 'dotenv';
+
+dotenv.config();
+
+import 'reflect-metadata';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { errors } from 'celebrate';
@@ -8,8 +11,6 @@ import AppError from '@shared/errors/AppError';
 import routes from './routes';
 import '@shared/infra/mongoose';
 import '@shared/container';
-
-dotenv.config();
 
 const app = express();
 
@@ -32,6 +33,6 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
   });
 });
 
-app.listen(3333, () => {
+app.listen(process.env.APP_PORT || 3333, () => {
   console.log('Server online on port 3333');
 });

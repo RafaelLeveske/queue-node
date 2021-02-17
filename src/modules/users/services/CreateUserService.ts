@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 import { injectable, inject } from 'tsyringe';
-
 import AppError from '@shared/errors/AppError';
 import { UserModel } from '../infra/mongoose/schemas/User';
 import IUsersRepository from '../repositories/IUsersRepository';
