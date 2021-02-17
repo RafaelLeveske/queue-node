@@ -9,9 +9,7 @@ class FakeUsersRepository implements IUsersRepository {
   public async findById(
     id: ObjectID | string,
   ): Promise<UserModel | null | undefined> {
-    const findUser = this.users
-      .find(user => user.id === id)
-      ?.populate('companies');
+    const findUser = this.users.find(user => user.id === id);
 
     return findUser;
   }

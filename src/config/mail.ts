@@ -11,11 +11,11 @@ interface IMailConfig {
 
 export default {
   defaults: {
-    host: process.env.MAILTRAP_HOST,
-    port: Number(process.env.MAILTRAP_PORT),
+    host: process.env.MAILTRAP_HOST || 'smtp.mailtrap.io',
+    port: process.env.MAILTRAP_PORT || 2525,
     auth: {
-      user: process.env.MAILTRAP_USER,
-      pass: process.env.MAILTRAP_PASS,
+      user: process.env.MAILTRAP_USER || '88d140616fbffe',
+      pass: process.env.MAILTRAP_PASS || 'faf4921172eb48',
     },
   },
 } as IMailConfig;
