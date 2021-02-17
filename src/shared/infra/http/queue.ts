@@ -2,15 +2,14 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-import { Worker } from 'bullmq';
-import RegistrationMail from '@modules/users/jobs/RegistrationMail';
+import Queue from '@modules/users/lib/Queue';
 
-const worker = new Worker(RegistrationMail.key);
+Queue.process();
 
-worker.on('completed', job => {
-  console.log(`${job.id} has completed!`);
-});
+// worker.on('completed', job => {
+//   console.log(`${job.id} has completed!`);
+// });
 
-worker.on('failed', (job, err) => {
-  console.log(`${job.id} has failed with ${err.message}`);
-});
+// worker.on('failed', (job, err) => {
+//   console.log(`${job.id} has failed with ${err.message}`);
+// });
