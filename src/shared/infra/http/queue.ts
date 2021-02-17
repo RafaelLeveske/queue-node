@@ -2,6 +2,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-import Queue from '@modules/users/lib/Queue';
+import Queue from '@shared/lib/Queue';
 
 Queue.process();

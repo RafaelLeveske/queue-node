@@ -1,4 +1,4 @@
-import Mail from '../lib/Mail';
+import Mail from '@shared/lib/Mail';
 import { UserModel } from '../infra/mongoose/schemas/User';
 
 interface IRegistrationMail {
