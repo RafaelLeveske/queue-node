@@ -16,7 +16,7 @@ export default class UsersController {
       password,
     });
 
-    await Queue.add('RegistrationMail', { user });
+    await Queue.add('RegistrationMail', { data: user });
 
     return response.json(_.omit(user.toJSON(), ['password']));
   }

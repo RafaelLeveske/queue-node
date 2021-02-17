@@ -1,13 +1,7 @@
 import { Job, Queue, Worker } from 'bullmq';
 import redisConfig from '@config/redis';
 import AppError from '@shared/errors/AppError';
-
 import * as jobs from '../jobs';
-import { UserModel } from '../infra/mongoose/schemas/User';
-
-interface IRegistrationMail {
-  data: UserModel;
-}
 
 const queues = Object.values(jobs).map(job => ({
   bull: new Queue(job.key, {
@@ -17,25 +11,18 @@ const queues = Object.values(jobs).map(job => ({
   handle: job.handle,
 }));
 
-// const mailQueue = new Queue(RegistrationMail.key, {
-//   connection: redisConfig.config.redis,
-// });
-
-// export default mailQueue;
-
 export default {
   queues,
   add(name: string, data: any): Promise<Job> {
     const queue = this.queues.find(
-      queueFromQueueList =>
-        queueFromQueueList.name === name && queueFromQueueList.handle === data,
+      queueFromQueueList => queueFromQueueList.name === name,
     );
 
     if (!queue) {
       throw new AppError('Queue do not exist', 400);
     }
 
-    return queue.bull.add(name, { data });
+    return queue.bull.add(name, queue.handle(data));
   },
   process(): void {
     return this.queues.forEach(queue => {
