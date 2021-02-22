@@ -5,7 +5,7 @@ import * as jobs from '../jobs';
 
 const queues = Object.values(jobs).map(job => ({
   bull: new Queue(job.key, {
-    connection: redisConfig.config.redis,
+    connection: redisConfig,
   }),
   name: job.key,
   handle: job.handle,

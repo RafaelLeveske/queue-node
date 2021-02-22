@@ -1,9 +1,13 @@
-import { UserModel } from '@modules/users/infra/mongoose/schemas/User';
-
-export interface IRegistrationMail {
-  data: UserModel;
+interface Message {
+  from: {
+    name: string;
+    email: string;
+  };
+  to: string;
+  subject: string;
+  body: string;
 }
 
-export interface IMailProvider {
-  sendEmail({ data }: IRegistrationMail): Promise<void>;
+export default interface MailProvider {
+  sendEmail(message: Message): Promise<void>;
 }

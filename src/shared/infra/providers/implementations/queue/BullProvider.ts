@@ -1,55 +1,31 @@
-import { Queue, Worker, Processor, QueueScheduler } from 'bullmq';
-import Redis, { Redis as RedisConnection } from 'ioredis';
-import * as queueJobs from '@shared/jobs';
-import { IQueueProvider } from '../../models/IQueueProvider';
+import Bull, { Queue, QueueOptions, ProcessPromiseFunction } from 'bull';
 
-export class BullProvider implements IQueueProvider {
-  private redisConnection: RedisConnection;
+import QueueProvider from '../../models/QueueProvider';
 
+class BullProvider implements QueueProvider {
   private queue: Queue;
 
-  constructor() {
-    this.redisConnection = new Redis();
-
-    this.queue = new Queue('mail-queue', {
-      connection: this.redisConnection,
-      defaultJobOptions: {
-        removeOnComplete: true,
-        attempts: 5,
-        backoff: {
-          type: 'exponential',
-          delay: 5000,
-        },
-      },
-    });
+  constructor(queueConfig: QueueOptions) {
+    this.queue = new Bull('mail-queue', queueConfig);
   }
 
-  async addManyJobs(jobs: object[]): Promise<void> {
-    const parsedJobs = jobs.map(jobData => {
-      return { name: 'message', data: jobData };
-    });
+  async add(data: object | object[]): Promise<void> {
+    if (Array.isArray(data)) {
+      const parsedJobs = data.map(jobData => {
+        return { data: jobData };
+      });
 
-    await this.queue.addBulk(parsedJobs);
+      await this.queue.addBulk(parsedJobs);
 
-    console.log(`Added ${jobs.length} jobs to queue.`);
+      return;
+    }
+
+    await this.queue.add(data);
   }
 
-  async addJob(job: object): Promise<void> {
-    await this.queue.add('message', job);
-  }
-
-  process(processFunction: Processor<object>): void {
-    new Worker('mail-queue', processFunction, {
-      connection: this.redisConnection,
-      concurrency: 150,
-      limiter: {
-        max: 150,
-        duration: 1000,
-      },
-    });
-
-    new QueueScheduler('mail-queue', {
-      connection: this.redisConnection,
-    });
+  process(processFunction: ProcessPromiseFunction<object>): void {
+    this.queue.process(150, processFunction);
   }
 }
+
+export default BullProvider;

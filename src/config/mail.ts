@@ -1,21 +1,47 @@
-interface IMailConfig {
-  defaults: {
-    host: string;
-    port: number;
-    auth: {
-      user: string;
-      pass: string;
-    };
+import { QueueOptions } from 'bull';
+import SMTPTransport from 'nodemailer/lib/smtp-transport';
+
+interface MailConfig {
+  driver: 'ses' | 'mailtrap';
+
+  queue: QueueOptions;
+
+  config: {
+    mailtrap: SMTPTransport.Options;
+    ses: object;
   };
 }
 
 export default {
-  defaults: {
-    host: process.env.MAILTRAP_HOST || 'smtp.mailtrap.io',
-    port: process.env.MAILTRAP_PORT || 2525,
-    auth: {
-      user: process.env.MAILTRAP_USER,
-      pass: process.env.MAILTRAP_PASS,
+  driver: process.env.MAIL_DRIVER || 'mailtrap',
+
+  queue: {
+    defaultJobOptions: {
+      removeOnComplete: true,
+      attempts: 5,
+      backoff: {
+        type: 'exponential',
+        delay: 5000,
+      },
+    },
+    limiter: {
+      max: 150,
+      duration: 1000,
     },
   },
-} as IMailConfig;
+
+  config: {
+    mailtrap: {
+      host: 'smtp.mailtrap.io',
+      port: 2525,
+      ssl: false,
+      tls: true,
+      auth: {
+        user: process.env.MAILTRAP_USER,
+        pass: process.env.MAILTRAP_PASS,
+      },
+    },
+
+    ses: {},
+  },
+} as MailConfig;

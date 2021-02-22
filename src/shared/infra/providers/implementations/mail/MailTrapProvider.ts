@@ -1,9 +1,9 @@
 import nodemailer, { Transporter } from 'nodemailer';
 import mailConfig from '@config/mail';
 
-import { IMailProvider, IRegistrationMail } from '../../models/IMailProvider';
+import IMailProvider, { IRegistrationMail } from '../../models/IMailProvider';
 
-export class MailtrapProvider implements IMailProvider {
+export default class MailtrapProvider implements IMailProvider {
   private transporter: Transporter;
 
   constructor() {

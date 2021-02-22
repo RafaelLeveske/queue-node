@@ -1,6 +1,8 @@
 import 'reflect-metadata';
 import { injectable, inject } from 'tsyringe';
 import AppError from '@shared/errors/AppError';
+import IMailProvider from '@shared/infra/providers/models/IMailProvider';
+import IQueueProvider from '@shared/infra/providers/models/IQueueProvider';
 import { UserModel } from '../infra/mongoose/schemas/User';
 import IUsersRepository from '../repositories/IUsersRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
@@ -19,6 +21,12 @@ class CreateUserSercice {
 
     @inject('HashProvider')
     private hashProvider: IHashProvider,
+
+    @inject('MailProvider')
+    private mailProvider: IMailProvider,
+
+    @inject('QueueProvider')
+    private queueProvider: IQueueProvider,
   ) {}
 
   public async execute({

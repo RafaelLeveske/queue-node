@@ -1,4 +1,4 @@
-import { BullProvider } from '@shared/infra/providers/implementations/queue/BullProvider';
+import BullProvider from '@shared/infra/providers/implementations/queue/BullProvider';
 
 const bullProvider = new BullProvider();
 
