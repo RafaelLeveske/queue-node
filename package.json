@@ -13,6 +13,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@sentry/node": "^6.2.0",
+    "@sentry/tracing": "^6.2.0",
     "@types/cors": "^2.8.9",
     "bcryptjs": "^2.4.3",
     "bullmq": "^1.14.7",
