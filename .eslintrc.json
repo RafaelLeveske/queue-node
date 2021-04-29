@@ -19,6 +19,7 @@
         "prettier"
     ],
     "rules": {
+      "@typescript-eslint/explicit-module-boundary-types": "off",
       "import/first": "off",
       "no-useless-constructor":"off",
       "class-methods-use-this":"off",

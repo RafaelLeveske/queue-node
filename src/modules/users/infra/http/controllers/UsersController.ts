@@ -1,13 +1,15 @@
 import { Request, Response } from 'express';
 import { container } from 'tsyringe';
-import _ from 'lodash';
 import CreateUserService from '@modules/users/services/CreateUserService';
-import Queue from '@modules/users/lib/Queue';
-import RegistrationMail from '@modules/users/jobs/RegistrationMail';
+import queue from '@modules/users/lib/Queue';
 
 export default class UsersController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
+
+    const server = queue;
+
+    const channel = await server.start();
 
     const createUser = container.resolve(CreateUserService);
 
@@ -17,11 +19,15 @@ export default class UsersController {
       password,
     });
 
-    await Queue.add(
-      'SendRegistrationMailJob',
-      RegistrationMail.handle({ data: user }),
+    await server.publishInQueue('GoQueue', JSON.stringify(user), channel);
+
+    await server.publishInExchange(
+      'amq.direct',
+      'rota',
+      JSON.stringify(user),
+      channel,
     );
 
-    return response.json(_.omit(user.toJSON(), ['password']));
+    return response.json(user);
   }
 }

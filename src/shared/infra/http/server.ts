@@ -8,6 +8,7 @@ import cors from 'cors';
 import { errors } from 'celebrate';
 import 'express-async-errors';
 import AppError from '@shared/errors/AppError';
+import queue from '@modules/users/lib/Queue';
 import routes from './routes';
 import '@shared/infra/mongoose';
 import '@shared/container';
@@ -32,6 +33,20 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
     message: 'Internal server error',
   });
 });
+
+const consumer = async () => {
+  try {
+    const server = queue;
+    const channel = await server.start();
+    server.consume('ExpressQueue', channel, message => {
+      console.log(message.content.toString());
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+consumer();
 
 app.listen(process.env.APP_PORT || 3333, () => {
   console.log('Server online on port 3333');
